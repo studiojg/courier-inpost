@@ -20,10 +20,11 @@ class InpostResponseErrorHelper
             $message = json_encode($content->details);
         }
 
-        if ($message === null
+        if (($message === null || $message == '{}')
             && isset($content->error)
             && isset($content->message)
         ) {
+
             $message = $content->error.' : '.$content->message;
         }
 
