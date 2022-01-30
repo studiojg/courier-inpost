@@ -176,18 +176,6 @@ class InpostCourierCreateShipment implements CourierCreateShipment
                     'country_code'      => $shipment->getReceiver()->getCountryCode(),
                 ],
             ],
-            'sender' => [
-                'company_name'  => $shipment->getSender()->getFullName(),
-                'email'         => $shipment->getSender()->getEmail(),
-                'phone'         => $shipment->getSender()->getPhone(),
-                'address'       => [
-                    'street'            => $shipment->getSender()->getStreet(),
-                    'building_number'   => $shipment->getSender()->getHouseNumber().' '.$shipment->getSender()->getApartmentNumber(),
-                    'city'              => $shipment->getSender()->getCity(),
-                    'post_code'         => $shipment->getSender()->getZipCode(),
-                    'country_code'      => $shipment->getSender()->getCountryCode(),
-                ],
-            ],
             'parcels' => [
                 [
                     'dimensions' => [
@@ -203,6 +191,21 @@ class InpostCourierCreateShipment implements CourierCreateShipment
             'reference' => $shipment->getContent(),
             'service'   => $this->session->parameters()->getService(),
         ];
+
+        if ($shipment->getSender()){
+            $data['sender'] = [
+                'company_name'  => $shipment->getSender()->getFullName(),
+                'email'         => $shipment->getSender()->getEmail(),
+                'phone'         => $shipment->getSender()->getPhone(),
+                'address'       => [
+                    'street'            => $shipment->getSender()->getStreet(),
+                    'building_number'   => $shipment->getSender()->getHouseNumber().' '.$shipment->getSender()->getApartmentNumber(),
+                    'city'              => $shipment->getSender()->getCity(),
+                    'post_code'         => $shipment->getSender()->getZipCode(),
+                    'country_code'      => $shipment->getSender()->getCountryCode(),
+                ],
+            ];
+        }
 
         if ($this->session->parameters()->hasProperty('target_point')) {
             $data['custom_attributes']['target_point'] = $this->session->parameters()->target_point;
