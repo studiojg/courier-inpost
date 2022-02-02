@@ -9,6 +9,7 @@ use Sylapi\Courier\Abstracts\Enum;
 class InpostServices extends Enum
 {
     const COURIER_STANDARD = 'inpost_courier_standard'; //Przesyłka kurierska standardowa
+    const COURIER_C2C = 'inpost_courier_c2c'; //Przesyłka kurierska - InPost Kurier C2C (usługa dla klienta detalicznego - prepaid)
     const COURIER_EXPRESS_1000 = 'inpost_courier_express_1000'; //Przesyłka kurierska z doręczeniem do 10:00
     const COURIER_EXPRESS_1200 = 'inpost_courier_express_1200'; //Przesyłka kurierska z doręczeniem do 12:00
     const COURIER_EXPRESS_1700 = 'inpost_courier_express_1700'; //Przesyłka kurierska z doręczeniem do 12:00

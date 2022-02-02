@@ -211,6 +211,10 @@ class InpostCourierCreateShipment implements CourierCreateShipment
             $data['custom_attributes']['target_point'] = $this->session->parameters()->target_point;
         }
 
+        if ($this->session->parameters()->hasProperty('sending_method')) {
+            $data['custom_attributes']['sending_method'] = $this->session->parameters()->sending_method;
+        }
+
         if ($this->session->parameters()->hasProperty('cod') && is_array($this->session->parameters()->cod)) {
             $data['cod'] = $this->session->parameters()->cod;
         }
