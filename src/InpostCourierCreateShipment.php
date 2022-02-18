@@ -161,6 +161,34 @@ class InpostCourierCreateShipment implements CourierCreateShipment
 
     private function getShipment(Shipment $shipment): array
     {
+        $shipmentParcels = $shipment->getParcel();
+        $parcels = [];
+        if (is_array($shipmentParcels)){
+            foreach($shipmentParcels as $parcelId => $parcel){
+                $parcels[] = [
+                    'id' => $parcelId,
+                    'dimensions' => [
+                        'length' => $parcel->getLength(),
+                        'width'  => $parcel->getWidth(),
+                        'height' => $parcel->getHeight(),
+                    ],
+                    'weight' => [
+                        'amount' => $parcel->getWeight(),
+                    ],
+                ];
+            }
+        } else {
+            $parcels[] = [
+                'dimensions' => [
+                    'length' => $shipment->getParcel()->getLength(),
+                    'width'  => $shipment->getParcel()->getWidth(),
+                    'height' => $shipment->getParcel()->getHeight(),
+                ],
+                'weight' => [
+                    'amount' => $shipment->getParcel()->getWeight(),
+                ],
+            ];
+        }
         $data = [
             'receiver' => [
                 'company_name'  => $shipment->getReceiver()->getFullName(),
@@ -176,18 +204,7 @@ class InpostCourierCreateShipment implements CourierCreateShipment
                     'country_code'      => $shipment->getReceiver()->getCountryCode(),
                 ],
             ],
-            'parcels' => [
-                [
-                    'dimensions' => [
-                        'length' => $shipment->getParcel()->getLength(),
-                        'width'  => $shipment->getParcel()->getWidth(),
-                        'height' => $shipment->getParcel()->getHeight(),
-                    ],
-                    'weight' => [
-                        'amount' => $shipment->getParcel()->getWeight(),
-                    ],
-                ],
-            ],
+            'parcels' => $parcels,
             'reference' => $shipment->getContent(),
             'service'   => $this->session->parameters()->getService(),
         ];
@@ -231,3 +248,4 @@ class InpostCourierCreateShipment implements CourierCreateShipment
         return str_replace(':organization_id', $value, self::API_PATH);
     }
 }
+
