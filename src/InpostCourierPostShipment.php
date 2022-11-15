@@ -30,7 +30,7 @@ class InpostCourierPostShipment implements CourierPostShipment
 
         try {
             $request = [
-                'shipments' => [$booking->getShipmentId()],
+                'shipments' => explode(',', $booking->getShipmentId()),
             ];
             $request = array_merge($request, $this->session->parameters()->getDispatchPoint());
 

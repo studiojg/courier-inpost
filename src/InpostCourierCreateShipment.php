@@ -191,11 +191,12 @@ class InpostCourierCreateShipment implements CourierCreateShipment
         }
         $data = [
             'receiver' => [
-                'company_name'  => $shipment->getReceiver()->getFullName(),
-                'first_name'    => $shipment->getReceiver()->getFirstName(),
-                'last_name'     => $shipment->getReceiver()->getSurname(),
-                'email'         => $shipment->getReceiver()->getEmail(),
+                //'company_name'  => $shipment->getReceiver()->getFullName(),
+                //'first_name'    => $shipment->getReceiver()->getFirstName(),
+                //'last_name'     => $shipment->getReceiver()->getSurname(),
+                //'email'         => $shipment->getReceiver()->getEmail(),
                 'phone'         => $shipment->getReceiver()->getPhone(),
+                /*
                 'address'       => [
                     'street'            => $shipment->getReceiver()->getStreet(),
                     'building_number'   => $shipment->getReceiver()->getHouseNumber().' '.$shipment->getReceiver()->getApartmentNumber(),
@@ -203,11 +204,62 @@ class InpostCourierCreateShipment implements CourierCreateShipment
                     'post_code'         => $shipment->getReceiver()->getZipCode(),
                     'country_code'      => $shipment->getReceiver()->getCountryCode(),
                 ],
+                */
             ],
+            /*
+            'parcels' => [
+                [
+                    'dimensions' => [
+                        'length' => $shipment->getParcel()->getLength(),
+                        'width'  => $shipment->getParcel()->getWidth(),
+                        'height' => $shipment->getParcel()->getHeight(),
+                    ],
+                    'weight' => [
+                        'amount' => $shipment->getParcel()->getWeight(),
+                    ],
+                ],
+            ],
+            */
             'parcels' => $parcels,
             'reference' => $shipment->getContent(),
             'service'   => $this->session->parameters()->getService(),
         ];
+
+        if ($shipment->getReceiver()->getFullName() !== NULL && strlen($shipment->getReceiver()->getFullName())){
+            $data['receiver']['company_name'] = $shipment->getReceiver()->getFullName();
+        }
+
+        if ($shipment->getReceiver()->getFirstName() !== NULL && strlen($shipment->getReceiver()->getFirstName())){
+            $data['receiver']['first_name'] = $shipment->getReceiver()->getFirstName();
+        }
+
+        if ($shipment->getReceiver()->getSurname() !== NULL && strlen($shipment->getReceiver()->getSurname())){
+            $data['receiver']['last_name'] = $shipment->getReceiver()->getSurname();
+        }
+
+        if ($shipment->getReceiver()->getEmail() !== NULL && strlen($shipment->getReceiver()->getEmail())){
+            $data['receiver']['email'] = $shipment->getReceiver()->getEmail();
+        }
+
+        if ($shipment->getReceiver()->getStreet() !== NULL && strlen($shipment->getReceiver()->getStreet())){
+            $data['receiver']['address']['street'] = $shipment->getReceiver()->getStreet();
+        }
+
+        if ($shipment->getReceiver()->getHouseNumber() !== NULL && strlen($shipment->getReceiver()->getHouseNumber())){
+            $data['receiver']['address']['building_number'] = $shipment->getReceiver()->getHouseNumber().' '.$shipment->getReceiver()->getApartmentNumber();
+        }
+
+        if ($shipment->getReceiver()->getCity() !== NULL && strlen($shipment->getReceiver()->getCity())){
+            $data['receiver']['address']['city'] = $shipment->getReceiver()->getCity();
+        }
+
+        if ($shipment->getReceiver()->getZipCode() !== NULL && strlen($shipment->getReceiver()->getZipCode())){
+            $data['receiver']['address']['post_code'] = $shipment->getReceiver()->getZipCode();
+        }
+
+        if ($shipment->getReceiver()->getCountryCode() !== NULL && strlen($shipment->getReceiver()->getCountryCode())){
+            $data['receiver']['address']['country_code'] = $shipment->getReceiver()->getCountryCode();
+        }
 
         if ($shipment->getSender()){
             $data['sender'] = [
@@ -248,4 +300,3 @@ class InpostCourierCreateShipment implements CourierCreateShipment
         return str_replace(':organization_id', $value, self::API_PATH);
     }
 }
-

@@ -16,7 +16,8 @@ use Sylapi\Courier\Helpers\ResponseHelper;
 
 class InpostCourierGetLabels implements CourierGetLabels
 {
-    const API_PATH = '/v1/shipments/:shipment_id/label';
+    const API_PATH_SINGLE = '/v1/shipments/:shipment_id/label';
+    const API_PATH_MULTIPLE = '/v1/organizations/:organization_id/shipments/labels';
 
     private $session;
 
@@ -31,7 +32,7 @@ class InpostCourierGetLabels implements CourierGetLabels
             $stream = $this->session
                 ->client()
                 ->get(
-                    $this->getPath($shipmentId),
+                    $this->getPathSingle($shipmentId),
                     [
                         'query' => [
                             'type' => $this->session->parameters()->getLabelType(),
@@ -61,15 +62,21 @@ class InpostCourierGetLabels implements CourierGetLabels
     {
         try {
             $tmpFile = tmpfile();
+            $apiPath = strstr($shipmentId, ',') !== false ? $this->getPathMultiple($this->session->parameters()->organization_id) : $this->getPathSingle($shipmentId);
+            $params = [
+                'type' => $this->session->parameters()->getLabelType(),
+                'format' => $format,
+            ];
+            if (strstr($shipmentId, ',') !== false){
+                $params['shipment_ids[]'] = explode(',', $shipmentId);
+            }
+            $query = \GuzzleHttp\Psr7\Query::build($params);
             $stream = $this->session
                 ->client()
                 ->get(
-                    $this->getPath($shipmentId),
+                    $apiPath,
                     [
-                        'query' => [
-                            'type' => $this->session->parameters()->getLabelType(),
-                            'format' => $format,
-                        ],
+                        'query' => $query,
                         'sink' => $tmpFile
                     ]
                 );
@@ -90,8 +97,13 @@ class InpostCourierGetLabels implements CourierGetLabels
         }
     }
 
-    private function getPath(string $value)
+    private function getPathSingle(string $value)
     {
-        return str_replace(':shipment_id', $value, self::API_PATH);
+        return str_replace(':shipment_id', $value, self::API_PATH_SINGLE);
+    }
+
+    private function getPathMultiple(string $value)
+    {
+        return str_replace(':organization_id', $value, self::API_PATH_MULTIPLE);
     }
 }
