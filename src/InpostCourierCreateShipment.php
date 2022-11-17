@@ -195,7 +195,7 @@ class InpostCourierCreateShipment implements CourierCreateShipment
                 //'first_name'    => $shipment->getReceiver()->getFirstName(),
                 //'last_name'     => $shipment->getReceiver()->getSurname(),
                 //'email'         => $shipment->getReceiver()->getEmail(),
-                'phone'         => $shipment->getReceiver()->getPhone(),
+                //'phone'         => $shipment->getReceiver()->getPhone(),
                 /*
                 'address'       => [
                     'street'            => $shipment->getReceiver()->getStreet(),
@@ -224,6 +224,10 @@ class InpostCourierCreateShipment implements CourierCreateShipment
             'reference' => $shipment->getContent(),
             'service'   => $this->session->parameters()->getService(),
         ];
+
+        if ($shipment->getReceiver()->getPhone() !== NULL && strlen($shipment->getReceiver()->getPhone())){
+            $data['receiver']['phone'] = $shipment->getReceiver()->getPhone();
+        }
 
         if ($shipment->getReceiver()->getFullName() !== NULL && strlen($shipment->getReceiver()->getFullName())){
             $data['receiver']['company_name'] = $shipment->getReceiver()->getFullName();
